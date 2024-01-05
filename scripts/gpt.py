@@ -1,8 +1,6 @@
 """
 This script is used to generate responses from GPT-3 or 4
 """
-
-
 import os
 
 from openai import OpenAI
@@ -12,17 +10,6 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY")
 )
 
-def generate_response(instruction : str = None) -> dict :
-    
-    # レスポンスを取得
-    chat_completion = client.chat.completions.create(
-        messages=[
-            {"role": "user", "content": instruction}
-        ],
-        model="gpt-3.5-turbo",
-    )   
-    
-    return chat_completion
 
 def Chat():
     
@@ -49,24 +36,25 @@ def Chat():
     print(instruction)
     
     while True :
-            
-        user_content = input(">>> ")
         
+        # ここを音声出力ファイルからとってくる必要がある．
+        user_content = input(">>> ")
         if user_content == "exit" :
             break
         
+        # user の発言を履歴に追加
         messages.append({"role": "user", "content": user_content})
         
+        # レスポンスを取得
         chat_completion = client.chat.completions.create(
             messages=messages, model="gpt-3.5-turbo",
         )
         assistant_message = chat_completion.choices[0].message.content
         
+        # システムの回答を履歴に追加
         messages.append({"role": "assistant", "content": assistant_message})
         
         print(assistant_message)
-        
-        
     
 
 if __name__ == "__main__":
