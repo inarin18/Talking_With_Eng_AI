@@ -1,4 +1,12 @@
 """ speech-to-text """
+import os, sys
+
+# バッファリングの解除
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
+sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', buffering=1)
+sys.stdin  = os.fdopen(sys.stdin.fileno(),  'r', buffering=1)
+
+from pathlib import Path
 
 import speech_recognition as sr
 import time
@@ -10,10 +18,10 @@ SAMPLE_RATE   = 44100        # サンプリングレート
 CHANNELS      = 1            # モノラルかバイラルか
 
 INPUT_DEVICE_INDEX  = 0      # マイクのチャンネル
-CALL_BACK_FREQUENCY = 3      # コールバック呼び出しの周期[sec]
+CALL_BACK_FREQUENCY = 2      # コールバック呼び出しの周期[sec]
 
 
-OUTPUT_TXT_FILE = "./" + "speech_input" + ".txt" 
+OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "speech_input.txt"
 
 
 __ALL__ = [
@@ -37,7 +45,8 @@ def look_for_audio_input():
 """ コールバック関数の定義 """
 def callback(in_data, frame_count, time_info, status):
 
-    global sprec # speech_recognitionオブジェクトを毎回作成するのではなく、使いまわすために、グローバル変数で定義しておく
+    # speech_recognitionオブジェクトを毎回作成するのではなく、使いまわすために、グローバル変数で定義しておく
+    global sprec 
 
     try:
         audiodata  = sr.AudioData(in_data, SAMPLE_RATE, 2)
@@ -80,8 +89,8 @@ def realtime_textise():
     
     stream.start_stream()
     
-    while stream.is_active():
-        time.sleep(0.1)
+    while stream.is_active() :
+        time.sleep(0.01)
     
     stream.stop_stream()
     stream.close()

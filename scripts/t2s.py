@@ -12,17 +12,17 @@ client = OpenAI(
 )
 
 
-def test():
+def t2s(text : str, model : str = "tts-1", voice : str = "alloy"):
     
-    speech_file_path = Path(__file__).parent.parent / "data" / "speech.mp3"
+    speech_file_path = Path(__file__).parent.parent / "data" / "speech_output.mp3"
     
     response = client.audio.speech.create(
-        model="tts-1",
-        voice="alloy",
-        input="The quick brown fox jumped over the lazy dog."
+        model=model,
+        voice=voice,
+        input=text
     )
     response.stream_to_file(speech_file_path)
 
 
 if __name__ == '__main__':
-    test()
+    pass
