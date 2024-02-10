@@ -56,7 +56,7 @@ def speech_2_text():
         response_format = "text"
     )
 
-    print(transcript)
+    return transcript
 
 
 def main():
