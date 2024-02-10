@@ -24,9 +24,7 @@ OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
 AUDIO_FILE_PATH = Path(__file__).parent.parent / "sounds" / "output.wav"
 
 # 音声を文字起こしする
-def speech_2_text():
-
-    RECORD_SECONDS = 5
+def speech_2_text(recording_time=5):
 
     with wave.open('sounds/output.wav', 'wb') as wf:
         
