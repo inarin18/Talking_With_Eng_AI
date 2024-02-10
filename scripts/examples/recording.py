@@ -26,20 +26,7 @@ with wave.open('sounds/output.wav', 'wb') as wf:
         in_data = stream.read(CHUNK)
         
         wf.writeframes(in_data)
-        
-        global sprec 
-        # speech recogniserインスタンスを生成
-        sprec = sr.Recognizer() 
-
-        try:
-            audiodata  = sr.AudioData(in_data, RATE, 2)
-            sprec_text = sprec.recognize_google(audiodata, language='eng')
-            print(sprec_text)
-        
-        except :
-            pass
-        
-        
+            
     print('Done')
 
     stream.close()
