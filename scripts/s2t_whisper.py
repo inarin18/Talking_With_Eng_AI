@@ -7,6 +7,7 @@ from pathlib import Path
 from openai import OpenAI
 
 from modules.audio_parameter import (
+    CHUNK              ,
     FORMAT             ,
     SAMPLE_RATE        ,
     CHANNELS           ,
@@ -25,7 +26,6 @@ AUDIO_FILE_PATH = Path(__file__).parent.parent / "sounds" / "output.wav"
 # 音声を文字起こしする
 def speech_2_text():
 
-    CHUNK = 1024
     RECORD_SECONDS = 5
 
     with wave.open('sounds/output.wav', 'wb') as wf:
@@ -51,9 +51,9 @@ def speech_2_text():
     
     audio_file = open(AUDIO_FILE_PATH, "rb")
     transcript = client.audio.transcriptions.create(
-        model = "whisper-1", 
-        file  = audio_file,
-        response_format="text"
+        model           = "whisper-1", 
+        file            = audio_file,
+        response_format = "text"
     )
 
     print(transcript)
