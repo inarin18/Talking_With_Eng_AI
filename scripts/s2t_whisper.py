@@ -6,7 +6,7 @@ import pyaudio
 from pathlib import Path
 from openai import OpenAI
 
-from modules.audio_parameter import (
+from .modules.audio_parameter import (
     CHUNK              ,
     FORMAT             ,
     SAMPLE_RATE        ,
@@ -36,7 +36,7 @@ def speech_2_text(recording_time=5):
         stream = p.open(format=FORMAT, channels=CHANNELS, rate=SAMPLE_RATE, input=True)
 
         print('Recording...')
-        for _ in range(0, SAMPLE_RATE // CHUNK * RECORD_SECONDS):
+        for _ in range(0, SAMPLE_RATE // CHUNK * recording_time):
             
             in_data = stream.read(CHUNK)
             

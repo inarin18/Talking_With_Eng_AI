@@ -2,7 +2,7 @@
 import pyaudio
 import speech_recognition as sr
 
-from modules.audio_parameter import (
+from .audio_parameter import (
     FORMAT             ,
     SAMPLE_RATE        ,
     CHANNELS           ,
