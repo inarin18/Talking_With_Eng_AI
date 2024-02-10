@@ -1,6 +1,7 @@
 import pyaudio
 
 # PyAudio に用いるパラメータ
+CHUNK               = 1024
 FORMAT              = pyaudio.paInt16
 SAMPLE_RATE         = 44100    # サンプリングレート
 CHANNELS            = 1        # モノラルかバイラルか
