@@ -51,6 +51,7 @@ def speech_2_text(recording_time=5):
     transcript = client.audio.transcriptions.create(
         model           = "whisper-1", 
         file            = audio_file,
+        language        = "en",
         response_format = "text"
     )
 
