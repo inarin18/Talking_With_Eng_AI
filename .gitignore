@@ -2,4 +2,7 @@ output.wav
 data/*.mp3
 *.txt
 makefile
+
 .vscode/
+
+__pycache__/
