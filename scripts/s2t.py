@@ -1,27 +1,35 @@
 """ speech-to-text """
-import os, sys
+import os
+import time
+import sys
+
+from pathlib import Path
+
+import speech_recognition as sr
+import concurrent.futures
+import pyaudio
+
 
 # バッファリングの解除
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
 sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', buffering=1)
 sys.stdin  = os.fdopen(sys.stdin.fileno(),  'r', buffering=1)
 
-from pathlib import Path
 
-import speech_recognition as sr
-import time
+global executor
 
-import pyaudio
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
 
 FORMAT        = pyaudio.paInt16
-SAMPLE_RATE   = 44100        # サンプリングレート
-CHANNELS      = 1            # モノラルかバイラルか
+SAMPLE_RATE   = 44100    # サンプリングレート
+CHANNELS      = 1        # モノラルかバイラルか
 
-INPUT_DEVICE_INDEX  = 0      # マイクのチャンネル
-CALL_BACK_FREQUENCY = 2      # コールバック呼び出しの周期[sec]
+INPUT_DEVICE_INDEX  = 0  # マイクのチャンネル
+CALL_BACK_FREQUENCY = 10 # コールバック呼び出しの周期[sec]
 
 
-OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "speech_input.txt"
+OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
 
 
 __ALL__ = [
@@ -63,6 +71,16 @@ def callback(in_data, frame_count, time_info, status):
     
     finally:
         return (None, pyaudio.paContinue)
+    
+
+# コールバック関数を非同期で実行するためのラッパー関数
+def async_callback(in_data, frame_count, time_info, status):
+    
+    global executor
+    
+    future = executor.submit(callback, in_data, frame_count, time_info, status)
+    
+    return future.result()
 
 
 """ リアルタイムで音声を文字起こしする """
@@ -84,7 +102,7 @@ def realtime_textise():
         input_device_index = INPUT_DEVICE_INDEX,
         input              = True, 
         frames_per_buffer  = SAMPLE_RATE*CALL_BACK_FREQUENCY, # CALL_BACK_FREQUENCY 秒周期でコールバック
-        stream_callback    = callback
+        stream_callback    = async_callback
     )
     
     stream.start_stream()
