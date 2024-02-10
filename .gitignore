@@ -6,3 +6,5 @@ makefile
 .vscode/
 
 __pycache__/
+
+playground.py
