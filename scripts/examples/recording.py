@@ -13,6 +13,7 @@ RATE = 44100
 RECORD_SECONDS = 5
 
 with wave.open('sounds/output.wav', 'wb') as wf:
+    
     p = pyaudio.PyAudio()
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(p.get_sample_size(FORMAT))
