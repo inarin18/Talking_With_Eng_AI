@@ -10,32 +10,27 @@ import concurrent.futures
 import pyaudio
 
 
-# バッファリングの解除
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', buffering=1)
-sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', buffering=1)
-sys.stdin  = os.fdopen(sys.stdin.fileno(),  'r', buffering=1)
-
-
-global executor
-
-executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-
-
-FORMAT        = pyaudio.paInt16
-SAMPLE_RATE   = 44100    # サンプリングレート
-CHANNELS      = 1        # モノラルかバイラルか
-
-INPUT_DEVICE_INDEX  = 0  # マイクのチャンネル
-CALL_BACK_FREQUENCY = 10 # コールバック呼び出しの周期[sec]
-
-
-OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
-
-
 __ALL__ = [
     'look_for_audio_input',
     'realtime_textise'
 ]
+
+
+# 以下 import 時に実行されるコード
+
+# 非同期処理を行うための実行者を生成
+global executor
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+# PyAudio に用いるパラメータ
+FORMAT              = pyaudio.paInt16
+SAMPLE_RATE         = 44100    # サンプリングレート
+CHANNELS            = 1        # モノラルかバイラルか
+INPUT_DEVICE_INDEX  = 0        # マイクのチャンネル
+CALL_BACK_FREQUENCY = 10       # コールバック呼び出しの周期[sec]
+
+# アウトプットファイルのパス
+OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
 
 
 """ デバイス上でのオーディオ系の機器情報を表示する """
