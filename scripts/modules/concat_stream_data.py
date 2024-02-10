@@ -17,18 +17,14 @@ def generate_part_of_sentence(in_data):
     
     try :
         audiodata  = sr.AudioData(in_data, SAMPLE_RATE, 2)
-        sprec_text = sprec.recognize_google(audiodata, language='eng')
+        sprec_text = sprec.recognize_google(audiodata, language='jp-JP')
+        return sprec_text
         
     except sr.UnknownValueError as e:
-        pass
+        return ""
     
     except sr.RequestError as e:
-        pass
-    
-    finally:
-        sprec_text = sprec_text if sprec_text != "" else ""
-
-    return sprec_text
+        return ""
 
 
 def concat_part_of_sentence(stream_data):
