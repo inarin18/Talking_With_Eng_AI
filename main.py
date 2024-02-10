@@ -12,7 +12,8 @@ import os
 
 from openai import OpenAI
 
-from scripts.s2t import realtime_textise
+from scripts.s2t_google_recognition import realtime_textise
+from scripts.s2t_whisper import speech_2_text
 from scripts.gpt import Chat 
 from scripts.t2s import t2s
 
@@ -23,7 +24,8 @@ client = OpenAI(
 
 
 def main():
-    pass
+    
+    realtime_textise()
 
 
 if __name__ == "__main__":
