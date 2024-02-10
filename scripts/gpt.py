@@ -11,52 +11,22 @@ client = OpenAI(
 )
 
 
-def Chat():
+# ユーザの発言から gpt による回答を取得
+def generate_gpt_response(conversation_history :list, user_sentence :str, gpt_model :str) -> str:
     
-    # メッセージ履歴の初期化
-    messages = []
+    # user の発言を履歴に追加
+    conversation_history.append({"role": "user", "content": user_sentence})
     
-    # gpt に対する指示
-    instruction = """
-    You are the native person in English.
-    You are going to talk with a person who is not good at English.
-    All you have to do is to conversation with him/her.
-    You should comply with the following rules.
-        1. If you find that 'user' made a mistake, You should inform him/her of the mistake and then correct it.
-            ex 1) user : Hello I am a student.
-            then you should respond on context.
-            ex 2) user : Hello She am a student.
-            then you should insist that 'she' is wrong and correct it like this.
-            You : Your sentence is wrong. You should say 'I' instead of 'she'.
-        2. You should talk with user as if you are a native person in English.
-        3. Your resopnse should be on a context.
-    """
-    messages.append({"role": "system", "content": instruction})
+    # レスポンスを取得
+    chat_completion = client.chat.completions.create(
+        messages = conversation_history, 
+        model    = gpt_model,
+    )
+    assistant_message = chat_completion.choices[0].message.content
     
-    print(instruction)
-    
-    while True :
-        
-        # ここを音声出力ファイルからとってくる必要がある．
-        user_content = input(">>> ")
-        if user_content == "exit" :
-            break
-        
-        # user の発言を履歴に追加
-        messages.append({"role": "user", "content": user_content})
-        
-        # レスポンスを取得
-        chat_completion = client.chat.completions.create(
-            messages=messages, model="gpt-3.5-turbo",
-        )
-        assistant_message = chat_completion.choices[0].message.content
-        
-        # システムの回答を履歴に追加
-        messages.append({"role": "assistant", "content": assistant_message})
-        
-        print(assistant_message)
+    return assistant_message
     
 
 if __name__ == "__main__":
     
-    Chat()
+    generate_gpt_response()
