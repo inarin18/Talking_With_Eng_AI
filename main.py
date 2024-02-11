@@ -9,6 +9,7 @@ Description :
 """
 
 import os
+import streamlit as st
 
 from openai import OpenAI
 
@@ -16,6 +17,7 @@ from scripts.s2t_google_recognition import realtime_textise
 from scripts.s2t_whisper import speech_2_text
 from scripts.gpt import generate_gpt_response 
 from scripts.t2s import text_2_speech
+from scripts.utils_streamlit import init_streamlit, show_conversation
 
 
 client = OpenAI(
@@ -23,76 +25,71 @@ client = OpenAI(
 )
 
 
+def dummy():
+    return "dummy"
+
+
 def main():
     
-    RECORD_SECONDS = 5
+    RECORD_SECONDS          = 5
     MAX_CONVERSATION_LENGTH = 2
-    END_OF_CONVERSATION = "hinata"
     
-    # 会話履歴の初期化
-    conversation_history = []
+    # 会話履歴の初期化等を行う．
+    init_streamlit()
     
-    # gpt に対する指示
-    instruction = """
-    You are the native person in English.
-    You are going to talk with a person who is not good at English.
-    All you have to do is to conversation with him/her.
-    You should comply with the following rules.
-        1. If you find that 'user' made a mistake, You should inform him/her of the mistake and then correct it.
-            ex 1) user : Hello I am a student.
-            then you should respond on context.
-            ex 2) user : Hello She am a student.
-            then you should insist that 'she' is wrong and correct it like this.
-            You : Your sentence is wrong. You should say 'I' instead of 'she'.
-        2. You should talk with user as if you are a native person in English.
-        3. Your resopnse should be on a context.
-    """
+    st.title("English Conversation with GPT")
     
-    # gpt への指示を履歴に追加
-    conversation_history.append(
+    st.warning("The History of the conversation will be banished in case you raload.")
+    
+    # チャット形式で会話履歴の表示
+    show_conversation()
+    
+    prompt = st.chat_input("Say something")
+        
+    # ユーザーの発言を取得
+    user_sentence = speech_2_text(RECORD_SECONDS)
+    
+    # streamlit 画面にユーザの発言を表示
+    with st.chat_message("user"):
+        st.write(user_sentence)
+    
+    # user の発言を履歴に追加
+    st.session_state.conversation_history.append(
         {
-            "role": "system", 
-            "content": instruction
+            "role": "user", 
+            "content": user_sentence
+        }
+    )
+
+    # ユーザの発言から gpt による回答を取得
+    gpt_response  = generate_gpt_response(
+        conversation_history = st.session_state.conversation_history,  
+        gpt_model            = "gpt-3.5-turbo"
+    )
+    
+    # gpt の回答を streamlit 画面に表示
+    with st.chat_message("assistant"):
+        st.write(gpt_response)
+    
+    # gpt の回答を履歴に追加
+    st.session_state.conversation_history.append(
+        {
+            "role": "assistant", 
+            "content": gpt_response
         }
     )
     
-    # ユーザーの発言を取得して終了判定も兼ねる
-    for _ in range(MAX_CONVERSATION_LENGTH):
+    # gpt の回答を音声化して再生
+    # text_2_speech(
+    #     text  = gpt_response,
+    #     model = "tts-1",
+    #     voice = "alloy"
+    # )
         
-        # ユーザーの発言を取得
-        user_sentence = speech_2_text(RECORD_SECONDS)
-        
-        if END_OF_CONVERSATION in user_sentence.lower() :
-            break
-        
-        print("user : " + user_sentence)
-    
-        # ユーザの発言から gpt による回答を取得
-        gpt_response  = generate_gpt_response(
-            conversation_history = conversation_history, 
-            user_sentence        = user_sentence, 
-            gpt_model            = "gpt-3.5-turbo"
-        )
-        
-        print("gpt  : " + gpt_response)
-        
-        # gpt の回答を履歴に追加
-        conversation_history.append(
-            {
-                "role": "assistant", 
-                "content": gpt_response
-            }
-        )
-        
-        # gpt の回答を音声化して再生
-        text_2_speech(
-            text  = gpt_response,
-            model = "tts-1",
-            voice = "alloy"
-        )
-        
-    for conversation in conversation_history:
+    for conversation in st.session_state.conversation_history:
         print(conversation["content"])
+        
+    st.button("Next Conversation")
 
 
 if __name__ == "__main__":
