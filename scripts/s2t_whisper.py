@@ -3,6 +3,8 @@ import os
 import wave
 import pyaudio
 
+import streamlit as st
+
 from pathlib import Path
 from openai import OpenAI
 
@@ -14,6 +16,8 @@ from .modules.audio_parameter import (
     INPUT_DEVICE_INDEX ,
     CALL_BACK_FREQUENCY,
 )
+
+from .utils_streamlit import change_mic_state_to_disabled
 
 client = OpenAI(
     api_key=os.environ["OPENAI_API_KEY"]
@@ -54,6 +58,9 @@ def speech_2_text(recording_time=5):
         language        = "en",
         response_format = "text"
     )
+    
+    # 音声を文字起こししたのち，ボタンを able に
+    change_mic_state_to_disabled(disabled=False)
 
     return transcript
 
