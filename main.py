@@ -17,16 +17,17 @@ from scripts.s2t_google_recognition import realtime_textise
 from scripts.s2t_whisper import speech_2_text
 from scripts.gpt import generate_gpt_response 
 from scripts.t2s import text_2_speech
-from scripts.utils_streamlit import init_streamlit, show_conversation
+
+from scripts.utils_streamlit import (
+    init_streamlit, 
+    show_conversation, 
+    change_mic_state_to_disabled
+)
 
 
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY")
 )
-
-
-def dummy():
-    return "dummy"
 
 
 def main():
@@ -37,6 +38,16 @@ def main():
     # 会話履歴の初期化等を行う．
     init_streamlit()
     
+    with st.sidebar:
+        st.button(
+            label    = "Recording Start 🎤",
+            key      = "mic",
+            type     = "secondary",
+            disabled = st.session_state.mic_disabled,
+            on_click = change_mic_state_to_disabled,
+            args     = (True, )
+        )
+    
     st.title("English Conversation with GPT")
     
     st.warning("The History of the conversation will be banished in case you raload.")
@@ -44,10 +55,16 @@ def main():
     # チャット形式で会話履歴の表示
     show_conversation()
     
+    # テキスト入力欄
     prompt = st.chat_input("Say something")
-        
+
     # ユーザーの発言を取得
-    user_sentence = speech_2_text(RECORD_SECONDS)
+    if st.session_state.mic :
+        user_sentence = speech_2_text(RECORD_SECONDS)
+    elif prompt is not None:
+        user_sentence = prompt
+    else :
+        st.stop()
     
     # streamlit 画面にユーザの発言を表示
     with st.chat_message("user"):
@@ -85,11 +102,8 @@ def main():
     #     model = "tts-1",
     #     voice = "alloy"
     # )
-        
-    for conversation in st.session_state.conversation_history:
-        print(conversation["content"])
-        
-    st.button("Next Conversation")
+    
+    st.rerun()
 
 
 if __name__ == "__main__":
