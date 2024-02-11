@@ -1,15 +1,11 @@
 """ t2s : text-to-speech """
 
 import os
-import wave
-import pyaudio
+import time
+import pygame
 
-from pathlib import Path
+from mutagen.mp3 import MP3 as mp3
 from openai import OpenAI
-
-from .modules.audio_parameter import (
-    CHUNK
-)
 
 
 client = OpenAI(
@@ -19,34 +15,28 @@ client = OpenAI(
 
 def text_2_speech(text : str, model : str = "tts-1", voice : str = "alloy"):
     
-    SPEECH_FILE_PATH = Path(__file__).parent.parent / "data" / "speech_output.mp3"
+    SPEECH_FILE_PATH = "data/speech_output.mp3"
     
+    # テキストから音声を生成
     response = client.audio.speech.create(
         model = model,
         voice = voice,
         input = text
     )
     
+    # stream からファイルに書き込み
     response.stream_to_file(SPEECH_FILE_PATH)
+
+    # 再生
+    pygame.mixer.init()
+    pygame.mixer.music.load(SPEECH_FILE_PATH)
+    pygame.mixer.music.play()
     
-    with wave.open(SPEECH_FILE_PATH, 'rb') as wf:
-
-        p = pyaudio.PyAudio()
-
-        stream = p.open(
-            format    = p.get_format_from_width(wf.getsampwidth()),
-            channels  = wf.getnchannels(),
-            rate      = wf.getframerate(),
-            output    = True
-        )
-
-        while len(data := wf.readframes(CHUNK)):
-            stream.write(data)
-
-        stream.close()
-        p.terminate()
+    # mp3 ファイルの長さだけ待機
+    time.sleep(mp3(SPEECH_FILE_PATH).info.length + 0.5)
     
-    
+    # 終了
+    pygame.mixer.quit()
 
 
 if __name__ == '__main__':
