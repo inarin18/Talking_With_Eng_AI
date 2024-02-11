@@ -15,7 +15,7 @@ from openai import OpenAI
 from scripts.s2t_google_recognition import realtime_textise
 from scripts.s2t_whisper import speech_2_text
 from scripts.gpt import generate_gpt_response 
-from scripts.t2s import t2s
+from scripts.t2s import text_2_speech
 
 
 client = OpenAI(
@@ -82,6 +82,13 @@ def main():
                 "role": "assistant", 
                 "content": gpt_response
             }
+        )
+        
+        # gpt の回答を音声化して再生
+        text_2_speech(
+            text  = gpt_response,
+            model = "tts-1",
+            voice = "alloy"
         )
         
     for conversation in conversation_history:
