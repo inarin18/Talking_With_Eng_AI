@@ -15,6 +15,9 @@ def init_streamlit():
                 "content": INSTRUCTION
             }
         )
+    
+    if "mic_disabled" not in st.session_state:
+        st.session_state.mic_disabled = False
         
 
 # 会話履歴をチャット形式で表示
@@ -23,3 +26,8 @@ def show_conversation():
         for message in st.session_state.conversation_history[1:]:
             with st.chat_message(message["role"]):
                 st.write(message["content"])
+
+
+def change_mic_state_to_disabled(disabled :bool = True):
+    
+    st.session_state.mic_disabled = disabled
