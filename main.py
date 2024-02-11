@@ -65,7 +65,7 @@ def main():
         if END_OF_CONVERSATION in user_sentence.lower() :
             break
         
-        print("user : " + user_sentence + "\n")
+        print("user : " + user_sentence)
     
         # ユーザの発言から gpt による回答を取得
         gpt_response  = generate_gpt_response(
@@ -74,7 +74,7 @@ def main():
             gpt_model            = "gpt-3.5-turbo"
         )
         
-        print("gpt  : " + gpt_response + "\n")
+        print("gpt  : " + gpt_response)
         
         # gpt の回答を履歴に追加
         conversation_history.append(
