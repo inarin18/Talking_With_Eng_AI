@@ -17,7 +17,7 @@ client = OpenAI(
 )
 
 
-def t2s(text : str, model : str = "tts-1", voice : str = "alloy"):
+def text_2_speech(text : str, model : str = "tts-1", voice : str = "alloy"):
     
     SPEECH_FILE_PATH = Path(__file__).parent.parent / "data" / "speech_output.mp3"
     
