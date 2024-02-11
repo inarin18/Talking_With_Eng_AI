@@ -12,10 +12,7 @@ client = OpenAI(
 
 
 # ユーザの発言から gpt による回答を取得
-def generate_gpt_response(conversation_history :list, user_sentence :str, gpt_model :str) -> str:
-    
-    # user の発言を履歴に追加
-    conversation_history.append({"role": "user", "content": user_sentence})
+def generate_gpt_response(conversation_history :list, gpt_model :str) -> str:
     
     # レスポンスを取得
     chat_completion = client.chat.completions.create(
