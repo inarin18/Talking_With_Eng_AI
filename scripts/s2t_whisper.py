@@ -40,11 +40,28 @@ def speech_2_text(recording_time=5):
         stream = p.open(format=FORMAT, channels=CHANNELS, rate=SAMPLE_RATE, input=True)
 
         print('Recording...')
-        for _ in range(0, SAMPLE_RATE // CHUNK * recording_time):
+        
+        # 録音停止ボタンを配置しておく
+        with st.sidebar:
+           
+            stop_button_placeholder = st.empty()
             
+        is_mic_stop = False
+        key_suffix  = 0
+        while not is_mic_stop:
+            
+            # stream から読み込み出力ファイルに書き込み
             in_data = stream.read(CHUNK)
-            
             wf.writeframes(in_data)
+        
+            # サイドバーに録音停止ボタンを配置
+            is_mic_stop = stop_button_placeholder.button(
+                label = "Recording Stop 🎤",
+                key   = f"mic_stop_{key_suffix}"
+            )
+            
+            # 複製禁止エラーが出るのを防ぐために key_suffix の更新
+            key_suffix += 1
                 
         print('Done')
 
