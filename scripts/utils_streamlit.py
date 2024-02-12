@@ -3,10 +3,18 @@ import streamlit as st
 from .prompt import INSTRUCTION
 
 
+# curr_state :
+# "init"
+# "waiting_for_user_input"
+# "in_speech_2_text"
+# "waiting_for_gpt_response"
+# "waiting_for_sound_response"
+
+
 def init_streamlit():
     
     if "curr_state" not in st.session_state:  
-        st.session_state.curr_state = "init"
+        st.session_state.curr_state = "initializing"
     
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
@@ -21,6 +29,12 @@ def init_streamlit():
     
     if "mic_disabled" not in st.session_state:
         st.session_state.mic_disabled = False
+        
+    if "prompt" not in st.session_state:
+        st.session_state.prompt = None
+        
+    if "user_sentence" not in st.session_state:
+        st.session_state.user_sentence = None
         
 
 # 会話履歴をチャット形式で表示
