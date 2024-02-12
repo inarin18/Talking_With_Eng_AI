@@ -28,7 +28,7 @@ def locate_input_widget() :
         )
     
     # テキスト入力欄を配置しておく
-    st.session_state.prompt = st.chat_input("Say something", key="prompt")
+    st.chat_input("Say something", key="prompt")
 
 
 
@@ -58,12 +58,12 @@ def handle_user_input() :
     )
     
 
-def handle_gpt_response():
+def handle_gpt_response(gpt_model :str = "gpt-3.5-turbo"):
     
     # ユーザの発言から gpt による回答を取得
     st.session_state.gpt_response  = generate_gpt_response(
         conversation_history = st.session_state.conversation_history,  
-        gpt_model            = "gpt-3.5-turbo"
+        gpt_model            = gpt_model
     )
     
     # gpt の回答を streamlit 画面に表示
