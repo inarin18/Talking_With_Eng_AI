@@ -34,26 +34,23 @@ client = OpenAI(
 
 def main():
     
-    RECORD_SECONDS          = 5
-    MAX_CONVERSATION_LENGTH = 2
+    if st.session_state.curr_state == "initializing":
+        
+        # 会話履歴の初期化等を行う．
+        init_streamlit()
+        
+        st.title("English Conversation with GPT")
+        
+        # チャット形式で会話履歴の表示
+        show_conversation()
+        
+        locate_input_widget()
     
-    # 会話履歴の初期化等を行う．
-    init_streamlit()
+    elif st.session_state.curr_state == "speech_2_text":
+        handle_user_input()
     
-    st.title("English Conversation with GPT")
-    
-    # チャット形式で会話履歴の表示
-    show_conversation()
-    
-    locate_input_widget()
-    
-    st.session_state.curr_state = "waiting_for_user_input"
-    
-    handle_user_input()
-    
-    st.session_state.curr_state = "waiting_for_gpt_response"
-
-    handle_gpt_response()
+    elif st.session_state.curr_state == "gpt_response":
+        handle_gpt_response()
     
     st.session_state.curr_state = "waiting_for_sound_response"
     
