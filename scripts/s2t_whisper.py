@@ -27,9 +27,10 @@ client = OpenAI(
 OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
 AUDIO_FILE_PATH = Path(__file__).parent.parent / "sounds" / "output.wav"
 
-# 音声を文字起こしする
-def speech_2_text(recording_time=5):
 
+
+def record_audio():
+    
     with wave.open('sounds/output.wav', 'wb') as wf:
         
         p = pyaudio.PyAudio()
@@ -67,6 +68,14 @@ def speech_2_text(recording_time=5):
 
         stream.close()
         p.terminate()
+
+
+# 音声を文字起こしする
+def speech_2_text():
+    
+    st.session_state.curr_state = "speech_2_text"
+
+    record_audio()
     
     audio_file = open(AUDIO_FILE_PATH, "rb")
     transcript = client.audio.transcriptions.create(
@@ -78,6 +87,8 @@ def speech_2_text(recording_time=5):
     
     # 音声を文字起こししたのち，ボタンを able に
     change_mic_state_to_disabled(disabled=False)
+    
+    st.session_state.curr_state = "out_speech_2_text"
 
     return transcript
 
