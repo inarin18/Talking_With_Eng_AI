@@ -7,10 +7,17 @@ from scripts.gpt import generate_gpt_response
 from scripts.t2s import text_2_speech
 
 from scripts.utils_streamlit import (
-    init_streamlit, 
-    show_conversation, 
     change_mic_state_to_disabled
 )
+
+
+# 会話履歴をチャット形式で表示
+def show_conversation():
+    
+    # システムの発言は表示しない
+    for message in st.session_state.conversation_history[1:]:
+        with st.chat_message(message["role"]):
+            st.write(message["content"])
 
 
 
@@ -26,21 +33,21 @@ def locate_input_widget() :
             on_click = change_mic_state_to_disabled,
             args     = (True, )
         )
-    
-    # テキスト入力欄を配置しておく
-    st.chat_input("Say something", key="prompt")
 
 
 
 def handle_user_input() :
     
+    # テキスト入力欄を配置しておく
+    prompt = st.chat_input("You can also type your message here")
+    
     # ユーザーの発言を取得
     # 録音でもよいし，テキスト入力でもよい
-    if   st.session_state.mic : 
+    if   st.session_state.mic or st.session_state.is_still_recording: 
         st.session_state.user_sentence = speech_2_text()
         
-    elif st.session_state.prompt is not None   : 
-        st.session_state.user_sentence = st.session_state.prompt
+    elif prompt is not None   : 
+        st.session_state.user_sentence = prompt
         
     else : 
         st.stop()
