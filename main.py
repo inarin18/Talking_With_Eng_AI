@@ -15,12 +15,12 @@ from openai import OpenAI
 
 
 from scripts.utils_streamlit import (
-    init_streamlit, 
-    show_conversation, 
+    init_streamlit,  
     change_mic_state_to_disabled
 )
 
 from scripts.widget_handler import (
+    show_conversation,
     locate_input_widget,
     handle_user_input,
     handle_gpt_response,
