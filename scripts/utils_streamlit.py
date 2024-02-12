@@ -13,9 +13,6 @@ from .prompt import INSTRUCTION
 
 def init_streamlit():
     
-    if "curr_state" not in st.session_state:  
-        st.session_state.curr_state = "initializing"
-    
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
         
@@ -30,11 +27,18 @@ def init_streamlit():
     if "mic_disabled" not in st.session_state:
         st.session_state.mic_disabled = False
         
+    if "is_skip_record" not in st.session_state:
+        st.session_state.is_skip_record = False
+        
     if "prompt" not in st.session_state:
         st.session_state.prompt = None
         
     if "user_sentence" not in st.session_state:
         st.session_state.user_sentence = None
+        
+    if "gpt_response" not in st.session_state:
+        st.session_state.gpt_response = None
+        
         
 
 # 会話履歴をチャット形式で表示
