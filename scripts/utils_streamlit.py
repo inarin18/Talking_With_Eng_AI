@@ -5,6 +5,9 @@ from .prompt import INSTRUCTION
 
 def init_streamlit():
     
+    if "curr_state" not in st.session_state:  
+        st.session_state.curr_state = "init"
+    
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
         
