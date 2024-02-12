@@ -1,4 +1,5 @@
 
+import time
 import os
 import wave
 import pyaudio
@@ -17,7 +18,10 @@ from .modules.audio_parameter import (
     CALL_BACK_FREQUENCY,
 )
 
-from .utils_streamlit import change_mic_state_to_disabled
+from .utils_streamlit import (
+    change_mic_state_to_disabled, 
+    change_recording_state_to_true
+)
 
 client = OpenAI(
     api_key=os.environ["OPENAI_API_KEY"]
@@ -44,30 +48,38 @@ def record_audio():
         
         # 録音停止ボタンを配置しておく
         with st.sidebar:
-           
             stop_button_placeholder = st.empty()
-            
-        is_mic_stop = False
+        
+        placeholder = st.empty()
+    
         key_suffix  = 0
-        while not is_mic_stop:
+        while True:
             
             # stream から読み込み出力ファイルに書き込み
             in_data = stream.read(CHUNK)
             wf.writeframes(in_data)
         
             # サイドバーに録音停止ボタンを配置
-            is_mic_stop = stop_button_placeholder.button(
-                label = "Recording Stop 🎤",
-                key   = f"mic_stop_{key_suffix}"
-            )
+            with stop_button_placeholder.container():
+                
+                is_stop = st.button(
+                    label    = "Recording Stop 🎤",
+                    key      = f"mic_stop_{key_suffix}",
+                    on_click = change_recording_state_to_true
+                ) 
+            
+            if st.session_state.is_stop_recording : break
+            
+            placeholder.write(f"Recording... {key_suffix}")
             
             # 複製禁止エラーが出るのを防ぐために key_suffix の更新
             key_suffix += 1
+            
+            time.sleep(1)
                 
         print('Done')
         
-        # 録音終了時に録音スキップフラグを立てる
-        st.session_state.is_skip_record = True
+        stop_button_placeholder.empty()
 
         stream.close()
         p.terminate()
@@ -78,7 +90,7 @@ def speech_2_text():
 
     # 録音停止ボタンを押した際にリロードされて録音が二重にされてしまう問題を
     # 回避するために，録音操作をスキップするフラグにより処理を分岐
-    if not st.session_state.is_skip_record :
+    if not st.session_state.is_skip_recording :
         record_audio()
     
     audio_file = open(AUDIO_FILE_PATH, "rb")
@@ -92,9 +104,11 @@ def speech_2_text():
     # 音声を文字起こししたのち，ボタンを able に
     change_mic_state_to_disabled(disabled=False)
     
-    # 録音操作をスキップするためのフラグを初期化
-    st.session_state.is_skip_record = False
-
+    # 録音関連のフラグを初期化
+    st.session_state.is_stop_recording  = False
+    st.session_state.is_skip_recording  = False
+    st.session_state.is_still_recording = False
+    
     return transcript
 
 
