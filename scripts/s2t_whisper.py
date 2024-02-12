@@ -65,6 +65,9 @@ def record_audio():
             key_suffix += 1
                 
         print('Done')
+        
+        # 録音終了時に録音スキップフラグを立てる
+        st.session_state.is_skip_record = True
 
         stream.close()
         p.terminate()
@@ -72,10 +75,11 @@ def record_audio():
 
 # 音声を文字起こしする
 def speech_2_text():
-    
-    st.session_state.curr_state = "speech_2_text"
 
-    record_audio()
+    # 録音停止ボタンを押した際にリロードされて録音が二重にされてしまう問題を
+    # 回避するために，録音操作をスキップするフラグにより処理を分岐
+    if not st.session_state.is_skip_record :
+        record_audio()
     
     audio_file = open(AUDIO_FILE_PATH, "rb")
     transcript = client.audio.transcriptions.create(
@@ -88,7 +92,8 @@ def speech_2_text():
     # 音声を文字起こししたのち，ボタンを able に
     change_mic_state_to_disabled(disabled=False)
     
-    st.session_state.curr_state = "out_speech_2_text"
+    # 録音操作をスキップするためのフラグを初期化
+    st.session_state.is_skip_record = False
 
     return transcript
 
