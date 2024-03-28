@@ -46,10 +46,6 @@ def record_audio():
 
         print('Recording...')
         
-        # 録音停止ボタンを配置しておく
-        with st.sidebar:
-            stop_button_placeholder = st.empty()
-        
         placeholder = st.empty()
     
         key_suffix  = 0
@@ -58,28 +54,29 @@ def record_audio():
             # stream から読み込み出力ファイルに書き込み
             in_data = stream.read(CHUNK)
             wf.writeframes(in_data)
-        
+
+            # ここからは消す予定 ## ## ##
             # サイドバーに録音停止ボタンを配置
-            with stop_button_placeholder.container():
+            # with stop_button_placeholder.container():
                 
-                is_stop = st.button(
-                    label    = "Recording Stop 🎤",
-                    key      = f"mic_stop_{key_suffix}",
-                    on_click = change_recording_state_to_true
-                ) 
+            #     is_stop = st.button(
+            #         label    = "Recording Stop 🎤",
+            #         key      = f"mic_stop_{key_suffix}",
+            #         on_click = change_recording_state_to_true
+            #     ) 
             
             if st.session_state.is_stop_recording : break
             
             placeholder.write(f"Recording... {key_suffix}")
+            ## ## ## ここまで ## ## ## 
             
             # 複製禁止エラーが出るのを防ぐために key_suffix の更新
             key_suffix += 1
             
-            time.sleep(1)
+            # ボタン生成を抑えるために 1 秒待機（消去予定）
+            # time.sleep(1)
                 
         print('Done')
-        
-        stop_button_placeholder.empty()
 
         stream.close()
         p.terminate()
@@ -87,11 +84,8 @@ def record_audio():
 
 # 音声を文字起こしする
 def speech_2_text():
-
-    # 録音停止ボタンを押した際にリロードされて録音が二重にされてしまう問題を
-    # 回避するために，録音操作をスキップするフラグにより処理を分岐
-    if not st.session_state.is_skip_recording :
-        record_audio()
+    
+    record_audio()
     
     audio_file = open(AUDIO_FILE_PATH, "rb")
     transcript = client.audio.transcriptions.create(
@@ -103,11 +97,6 @@ def speech_2_text():
     
     # 音声を文字起こししたのち，ボタンを able に
     change_mic_state_to_disabled(disabled=False)
-    
-    # 録音関連のフラグを初期化
-    st.session_state.is_stop_recording  = False
-    st.session_state.is_skip_recording  = False
-    st.session_state.is_still_recording = False
     
     return transcript
 
