@@ -1,9 +1,15 @@
+import queue
 import streamlit as st
 
 from .prompt import INSTRUCTION
 
 
 def init_streamlit():
+    
+    if "result_queue" not in st.session_state:
+        
+        # 非同期処理とした処理の結果を格納するキュー
+        st.session_state.result_queue = queue.Queue()
     
     if "conversation_history" not in st.session_state:
         st.session_state.conversation_history = []
@@ -19,11 +25,8 @@ def init_streamlit():
     if "mic_disabled" not in st.session_state:
         st.session_state.mic_disabled = False
         
-    if "is_still_recording" not in st.session_state:
-        st.session_state.is_still_recording = False
-        
-    if "is_skip_recording" not in st.session_state:
-        st.session_state.is_skip_recording = False
+    if "is_locked_recording_thread" not in st.session_state:
+        st.session_state.is_locked_recording_thread = False
         
     if "is_stop_recording" not in st.session_state:
         st.session_state.is_stop_recording = False
@@ -44,10 +47,10 @@ def change_mic_state_to_disabled(disabled :bool = True):
 def change_recording_state_to_true():
     
     # 録音終了時に録音スキップフラグを立てる
-    st.session_state.is_skip_recording  = True
+    # st.session_state.is_skip_recording  = True
     
     # 録音停止ボタンを制御するためのフラグを立てる
     st.session_state.is_stop_recording  = True
     
     # 録音中のフラグを立てる
-    st.session_state.is_still_recording = True
+    # st.session_state.is_still_recording = True
