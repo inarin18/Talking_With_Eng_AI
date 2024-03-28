@@ -17,6 +17,7 @@ from openai import OpenAI
 
 from scripts import utils_streamlit
 from scripts import widget_handler
+from scripts import t2s
 
 
 client = OpenAI(
@@ -50,11 +51,11 @@ def main():
         )
         
         # gpt の回答を音声化して再生
-        # text_2_speech(
-        #     text  = gpt_response,
-        #     model = "tts-1",
-        #     voice = "alloy"
-        # )
+        t2s.text_2_speech(
+            text  = st.session_state.gpt_response,
+            model = "tts-1",
+            voice = "alloy"
+        )
         
         # ユーザの入力を初期化
         st.session_state.user_sentence = None
