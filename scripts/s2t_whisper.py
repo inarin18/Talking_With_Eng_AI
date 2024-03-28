@@ -48,38 +48,19 @@ def record_audio():
         
         # 録音停止ボタンを配置しておく
         with st.sidebar:
-            stop_button_placeholder = st.empty()
-        
-        placeholder = st.empty()
+            st.button(
+                label    = "Recording Stop 🎤",
+                key      = f"mic_stop",
+                on_click = change_recording_state_to_true
+            ) 
     
-        key_suffix  = 0
-        while True:
+        while not st.session_state.is_stop_recording:
             
             # stream から読み込み出力ファイルに書き込み
             in_data = stream.read(CHUNK)
             wf.writeframes(in_data)
-        
-            # サイドバーに録音停止ボタンを配置
-            with stop_button_placeholder.container():
-                
-                is_stop = st.button(
-                    label    = "Recording Stop 🎤",
-                    key      = f"mic_stop_{key_suffix}",
-                    on_click = change_recording_state_to_true
-                ) 
-            
-            if st.session_state.is_stop_recording : break
-            
-            placeholder.write(f"Recording... {key_suffix}")
-            
-            # 複製禁止エラーが出るのを防ぐために key_suffix の更新
-            key_suffix += 1
-            
-            time.sleep(1)
                 
         print('Done')
-        
-        stop_button_placeholder.empty()
 
         stream.close()
         p.terminate()
