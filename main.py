@@ -27,8 +27,6 @@ client = OpenAI(
 
 def main():
     
-    st.session_state
-    
     # 会話履歴の初期化等を行う．
     utils_streamlit.init_streamlit()
     
