@@ -9,22 +9,14 @@ Description :
 """
 
 import os
+import queue
 import streamlit as st
 
 from openai import OpenAI
 
 
-from scripts.utils_streamlit import (
-    init_streamlit,  
-    change_mic_state_to_disabled
-)
-
-from scripts.widget_handler import (
-    show_conversation,
-    locate_input_widget,
-    handle_user_input,
-    handle_gpt_response,
-)
+from scripts import utils_streamlit
+from scripts import widget_handler
 
 
 client = OpenAI(
@@ -34,27 +26,38 @@ client = OpenAI(
 
 def main():
     
+    st.session_state
+    
     # 会話履歴の初期化等を行う．
-    init_streamlit()
+    utils_streamlit.init_streamlit()
     
     st.title("English Conversation with GPT")
     
     # チャット形式で会話履歴の表示
-    show_conversation()
+    widget_handler.show_conversation()
     
-    locate_input_widget()
+    # 録音開始ボタンをサイドバーに配置
+    widget_handler.locate_input_widget()
 
-    handle_user_input()
+    # ユーザの入力処理
+    widget_handler.handle_user_input()
     
-    handle_gpt_response()
-    
-    
-    # gpt の回答を音声化して再生
-    # text_2_speech(
-    #     text  = gpt_response,
-    #     model = "tts-1",
-    #     voice = "alloy"
-    # )
+    # ユーザの入力を処理できていれば，gpt の回答を表示
+    if st.session_state.user_sentence is not None:
+        
+        widget_handler.handle_gpt_response(
+            gpt_model = "gpt-3.5-turbo-0125"
+        )
+        
+        # gpt の回答を音声化して再生
+        # text_2_speech(
+        #     text  = gpt_response,
+        #     model = "tts-1",
+        #     voice = "alloy"
+        # )
+        
+        # ユーザの入力を初期化
+        st.session_state.user_sentence = None
     
     # 現在の状態を初期化
     st.session_state.curr_state ="initializing"
