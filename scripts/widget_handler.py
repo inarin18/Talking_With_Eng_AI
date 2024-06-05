@@ -36,7 +36,7 @@ def locate_input_widget() :
 
 
 
-def handle_user_input() :
+def handle_user_input(client) :
     
     # テキスト入力欄を配置しておく
     prompt = st.chat_input("You can also type your message here")
@@ -44,7 +44,7 @@ def handle_user_input() :
     # ユーザーの発言を取得
     # 録音でもよいし，テキスト入力でもよい
     if   st.session_state.mic or st.session_state.is_still_recording: 
-        st.session_state.user_sentence = speech_2_text()
+        st.session_state.user_sentence = speech_2_text(client)
         
     elif prompt is not None   : 
         st.session_state.user_sentence = prompt
@@ -65,10 +65,11 @@ def handle_user_input() :
     )
     
 
-def handle_gpt_response(gpt_model :str = "gpt-3.5-turbo"):
+def handle_gpt_response(client, gpt_model :str = "gpt-3.5-turbo"):
     
     # ユーザの発言から gpt による回答を取得
     st.session_state.gpt_response  = generate_gpt_response(
+        client               = client,
         conversation_history = st.session_state.conversation_history,  
         gpt_model            = gpt_model
     )

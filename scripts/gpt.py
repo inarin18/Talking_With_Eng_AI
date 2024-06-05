@@ -6,13 +6,8 @@ import os
 from openai import OpenAI
 
 
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")
-)
-
-
 # ユーザの発言から gpt による回答を取得
-def generate_gpt_response(conversation_history :list, gpt_model :str) -> str:
+def generate_gpt_response(client: OpenAI, conversation_history :list, gpt_model :str) -> str:
     
     # レスポンスを取得
     chat_completion = client.chat.completions.create(

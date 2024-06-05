@@ -13,7 +13,7 @@ client = OpenAI(
 )
 
 
-def text_2_speech(text : str, model : str = "tts-1", voice : str = "alloy"):
+def text_2_speech(client: OpenAI, text : str, model : str = "tts-1", voice : str = "alloy"):
     
     SPEECH_FILE_PATH = "data/speech_output.mp3"
     

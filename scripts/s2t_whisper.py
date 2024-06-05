@@ -23,14 +23,9 @@ from .utils_streamlit import (
     change_recording_state_to_true
 )
 
-client = OpenAI(
-    api_key=os.environ["OPENAI_API_KEY"]
-)
-
 # ファイルのパス
 OUTPUT_TXT_FILE = Path(__file__).parent.parent / "data" / "user_speech.txt"
 AUDIO_FILE_PATH = Path(__file__).parent.parent / "sounds" / "output.wav"
-
 
 
 def record_audio():
@@ -67,7 +62,7 @@ def record_audio():
 
 
 # 音声を文字起こしする
-def speech_2_text():
+def speech_2_text(client: OpenAI):
 
     # 録音停止ボタンを押した際にリロードされて録音が二重にされてしまう問題を
     # 回避するために，録音操作をスキップするフラグにより処理を分岐
