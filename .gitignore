@@ -1,6 +1,5 @@
 output.wav
-data/*.mp3
-*.txt
+data/*
 makefile
 
 .vscode/
