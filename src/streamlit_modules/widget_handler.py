@@ -1,12 +1,12 @@
 
 import streamlit as st
 
-from src.s2t_google_recognition import realtime_textise
-from src.s2t_whisper import speech_2_text
-from src.gpt import generate_gpt_response 
-from src.t2s import text_2_speech
+from src.s2t.s2t_google_recognition import realtime_textise
+from src.s2t.s2t_whisper import speech_2_text
+from src.generate_text.gpt import generate_gpt_response 
+from src.t2s.t2s import text_2_speech
 
-from src.utils_streamlit import (
+from src.streamlit_modules.utils_streamlit import (
     change_mic_state_to_disabled
 )
 

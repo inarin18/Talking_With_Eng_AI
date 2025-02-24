@@ -1,6 +1,6 @@
 import streamlit as st
 
-from .prompt import INSTRUCTION
+from ..generate_text.prompt import INSTRUCTION
 
 
 def init_streamlit():

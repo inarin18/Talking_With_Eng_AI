@@ -8,9 +8,9 @@ from pathlib import Path
 import speech_recognition as sr
 import pyaudio
 
-from .modules.concat_stream_data import concat_part_of_sentence
+from ..modules.concat_stream_data import concat_part_of_sentence
 
-from .modules.audio_parameter import (
+from ..modules.audio_parameter import (
     FORMAT             ,
     SAMPLE_RATE        ,
     CHANNELS           ,

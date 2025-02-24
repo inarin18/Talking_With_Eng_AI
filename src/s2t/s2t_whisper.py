@@ -9,7 +9,7 @@ import streamlit as st
 from pathlib import Path
 from openai import OpenAI
 
-from .modules.audio_parameter import (
+from ..modules.audio_parameter import (
     CHUNK              ,
     FORMAT             ,
     SAMPLE_RATE        ,
@@ -18,7 +18,7 @@ from .modules.audio_parameter import (
     CALL_BACK_FREQUENCY,
 )
 
-from .utils_streamlit import (
+from ..streamlit_modules.utils_streamlit import (
     change_mic_state_to_disabled, 
     change_recording_state_to_true
 )
