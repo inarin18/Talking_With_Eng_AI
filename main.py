@@ -16,9 +16,9 @@ from openai import OpenAI
 from openai import AuthenticationError
 
 
-from scripts import utils_streamlit
-from scripts import widget_handler
-from scripts import t2s
+from src import utils_streamlit
+from src import widget_handler
+from src import t2s
 
 
 def main():
