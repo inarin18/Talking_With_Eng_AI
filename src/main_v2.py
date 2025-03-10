@@ -7,6 +7,8 @@ async def main():
         api_key=os.environ.get("OPENAI_API_KEY")
     )
 
+    # model: gpt-4o-mini-realtime-preview-2024-12-17
+    # model: gpt-4o-realtime-preview-2024-12-17
     async with client.beta.realtime.connect(model="gpt-4o-realtime-preview") as connection:
         await connection.session.update(session={'modalities': ['text']})
 
