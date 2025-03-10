@@ -152,7 +152,9 @@ class RealtimeApp(App[None]):
         self.run_worker(self.send_mic_audio())
 
     async def handle_realtime_connection(self) -> None:
-        async with self.client.beta.realtime.connect(model="gpt-4o-realtime-preview") as conn:
+        # gpt-4o-mini-realtime-preview-2024-12-17
+        # gpt-4o-realtime-preview-2024-12-17
+        async with self.client.beta.realtime.connect(model="gpt-4o-mini-realtime-preview-2024-12-17") as conn:
             self.connection = conn
             self.connected.set()
 
